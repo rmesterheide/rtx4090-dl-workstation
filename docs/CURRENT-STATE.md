@@ -41,7 +41,9 @@ Gemessen (num_predict 64, temperature 0):
 | `NUM_PARALLEL=1`, nur RDP-Daemon aus | 93 % GPU | 96 tok/s |
 | `NUM_PARALLEL=1`, RDP-Daemon + Sunshine aus | **100 % GPU** | **118 tok/s** |
 
-Konsequenz: `OLLAMA_NUM_PARALLEL=1` in der Unit (wie 3090), und der Benchmark läuft per SSH
+Konsequenz: `gnome-remote-desktop.service` (RDP, 392 MiB, neben Sunshine überflüssig) am 2026-09-13
+dauerhaft deaktiviert (`systemctl --user disable --now`, Port 3389 zu; VRAM-Basis im Leerlauf jetzt ~380 MiB),
+`OLLAMA_NUM_PARALLEL=1` in der Unit (wie 3090), und der Benchmark läuft per SSH
 mit gestoppten Remote-Desktop-Diensten — Wrapper [`scripts-4090/10b-run-llm-bench.sh`](../scripts-4090/10b-run-llm-bench.sh).
 Der Concurrency-Teil des Skripts ist damit auf beiden Boxen gleich (nicht) aussagekräftig.
 
