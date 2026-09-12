@@ -96,7 +96,7 @@ starten, Log lesen) oder auf Treiber ≥ 610 warten.
 ## Offen
 
 - [ ] `gh auth login --git-protocol ssh --web` + `gh ssh-key add ~/.ssh/id_ed25519.pub --title 4090rtx` (User, interaktiv)
-- [ ] Repo auf der Box ist eine rsync-Kopie, nach gh-Login durch echten Clone ersetzen
-- [ ] Entscheidung: eigenes Repo für 4090rtx oder Multi-Host-Repo
-- [ ] Sunshine Web-UI-Zugangsdaten setzen (User, Browser) und Moonlight vom Mac pairen (PIN)
-- [ ] Reboot-Test: Autologin + Sunshine-Service kommen ohne Eingriff hoch?
+- [ ] Repo auf der Box (`~/rtx4090-dl-workstation`) ist eine rsync-Kopie, nach gh-Login durch echten Clone ersetzen (`~/rtx3090-dl-workstation` dort ist die alte Kopie, kann weg)
+- [x] Eigenes Repo: [rmesterheide/rtx4090-dl-workstation](https://github.com/rmesterheide/rtx4090-dl-workstation) (privat, 2026-09-12)
+- [x] Web-UI-Zugangsdaten gesetzt, Moonlight vom Mac gepairt, Stream läuft (HEVC/Vulkan, 1080p)
+- [x] Reboot-Test 2026-09-12 23:31: Autologin in Wayland-Session (nicht gesperrt), Sunshine 1080p + Encoder, JupyterLab, Docker, alle Ports — ohne Eingriff hochgekommen
