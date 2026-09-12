@@ -23,7 +23,7 @@ After=network-online.target
 
 [Service]
 ExecStart=%h/ollama/bin/ollama serve
-Environment=OLLAMA_NUM_PARALLEL=4
+Environment=OLLAMA_NUM_PARALLEL=1
 Environment=OLLAMA_HOST=127.0.0.1:11434
 Restart=on-failure
 RestartSec=3
@@ -50,5 +50,5 @@ if [ -f "$BENCH_DIR/Modelfile.qwen3.6-27b-64k" ]; then
 fi
 
 echo "== 5/5 Lauf (ca. 10 min):"
-echo "   PATH=\$HOME/venvs/torchgpu/bin:\$PATH $BENCH_DIR/llm-bench.sh    # torch-venv vorne, damit die bf16-TFLOPS-Zeile nicht leer bleibt"
+echo "   bash $(dirname "$0")/10b-run-llm-bench.sh    # stoppt Remote-Desktop-Dienste (VRAM!), torch-venv im PATH, startet sie danach wieder"
 echo "   Ergebnis: $BENCH_DIR/results/<host>-<gpu>-<datum>.md  -> ins hermes-on-rtx3090-Repo unter bench/results/ und docs/benchmarks.md"

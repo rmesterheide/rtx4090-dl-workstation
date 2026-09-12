@@ -45,7 +45,8 @@ this guide (no CUDA toolkit, no venvs) — only:
 | NVIDIA driver (`nvidia-smi` works) | Ollama's bundled CUDA runtime talks to the driver directly | Ubuntu installer (third-party drivers) or step 4 |
 | `jq`, `zstd`, `curl`, `python3` | the script parses Ollama's JSON, the Ollama tarball is `.tar.zst` | `apt` (`python3`/`curl` are preinstalled on Ubuntu desktop) |
 | Ollama, **same version on both machines** (0.34.0 today) | tok/s depends on the Ollama/llama.cpp build | `ollama-linux-amd64.tar.zst` from the GitHub release, run as a `systemd --user` service (no root needed) |
-| `OLLAMA_NUM_PARALLEL=4` in the service env | otherwise the concurrency section just queues requests | set in the user unit |
+| `OLLAMA_NUM_PARALLEL=1` in the service env | 4 multiplies the KV cache and pushes a 64k-context model off the GPU on a 24 GB card; keep it equal on both boxes | set in the user unit |
+| a GPU with nothing else on it | a running desktop/remote-desktop stack costs ~0.5–1 GB VRAM and silently turns 100 % offload into 93 % | stop Sunshine/RDP for the run (see `scripts-4090/10b-run-llm-bench.sh`) |
 | the three models (~58 GB) + the `qwen3.6-27b-64k` Modelfile (`FROM qwen3.6:27b`, `num_ctx 65536`) | same models, same context sizes on both boxes | `ollama pull`, `ollama create` |
 | optional: a Python with PyTorch on `PATH` | fills the bf16 TFLOPS line at the end | step 8's `torchgpu` venv, or skip |
 

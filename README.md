@@ -31,6 +31,7 @@ Automatisierung: [`docs/SETUP.md` Abschnitt 0](docs/SETUP.md#0-llm-benchmark-fir
   - `09-docker-apt.sh` — Docker aus dem Ubuntu-Archiv statt `get.docker.com | sudo sh`,
     läuft komplett mit dem eng gescopten sudoers
   - `10-ollama-llm-bench.sh` — Ollama (User-Service, versionsgleich zur 3090) + Modelle + Benchmark-Vorbereitung
+  - `10b-run-llm-bench.sh` — Benchmark-Lauf unter fairen Bedingungen (Remote-Desktop-Dienste aus, sonst landet das 64k-Modell teils im RAM)
 - [`environments/`](environments) — pip-Requirements pro venv
 - [`systemd/jupyterlab.service`](systemd/jupyterlab.service) — JupyterLab als User-Service
 

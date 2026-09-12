@@ -24,12 +24,28 @@ vorbereitet 2026-09-13 mit [`scripts-4090/10-ollama-llm-bench.sh`](../scripts-40
 | | 3090 (`ubnt2080rm`) | 4090rtx |
 |---|---|---|
 | Ollama | 0.34.0, System-Service als User `ollama`, `/usr/local/bin` | **0.34.0**, `~/ollama/bin`, **`systemd --user`-Unit** `ollama.service` (kein root nötig), CUDA-Lib `cuda_v13`, Treiber 13.2 |
-| `OLLAMA_NUM_PARALLEL` | nicht gesetzt (Concurrency-Test lief mit Queue) | **4** in der Unit |
+| `OLLAMA_NUM_PARALLEL` | nicht gesetzt (=1, Concurrency-Test lief mit Queue) | **1** in der Unit (4 drängt das 64k-Modell in den RAM, s.u.) |
 | Modelle | qwen3.6:27b, qwen3.6:35b, gemma4:31b, qwen3.6-27b-64k | dieselben, `qwen3.6-27b-64k` per `ollama create` aus `~/hermes-bench/Modelfile.qwen3.6-27b-64k` (`FROM qwen3.6:27b`, `num_ctx 65536`) |
 | Skript | `~/hermes-bench/llm-bench.sh` (ohne `LC_ALL=C` → CPU/RAM-Felder leer) | `~/hermes-bench/llm-bench.sh`, Fassung aus dem Repo mit `LC_ALL=C` |
 | PyTorch für die TFLOPS-Zeile | nicht verfügbar | `PATH=$HOME/venvs/torchgpu/bin:$PATH` voranstellen |
 
-Lauf: `PATH=$HOME/venvs/torchgpu/bin:$PATH ~/hermes-bench/llm-bench.sh` (ca. 10 min),
+**VRAM-Befund (2026-09-13):** Der Desktop kostet auf dieser Box ~970 MiB VRAM
+(gnome-remote-desktop 392, Sunshine 104, GNOME/Xwayland/Apps der Rest); die 3090 ist headless.
+Damit passt `qwen3.6-27b-64k` (18 GB inkl. 64k-KV-Cache) nicht mehr ganz: 93 % GPU / 7 % RAM.
+Gemessen (num_predict 64, temperature 0):
+
+| Bedingung | Offload | Generation |
+|---|---|---|
+| `OLLAMA_NUM_PARALLEL=4` (KV-Cache ×4) | 93 % GPU | 37 tok/s |
+| `NUM_PARALLEL=1`, Desktop-Dienste an | 93 % GPU | 87 tok/s |
+| `NUM_PARALLEL=1`, nur RDP-Daemon aus | 93 % GPU | 96 tok/s |
+| `NUM_PARALLEL=1`, RDP-Daemon + Sunshine aus | **100 % GPU** | **118 tok/s** |
+
+Konsequenz: `OLLAMA_NUM_PARALLEL=1` in der Unit (wie 3090), und der Benchmark läuft per SSH
+mit gestoppten Remote-Desktop-Diensten — Wrapper [`scripts-4090/10b-run-llm-bench.sh`](../scripts-4090/10b-run-llm-bench.sh).
+Der Concurrency-Teil des Skripts ist damit auf beiden Boxen gleich (nicht) aussagekräftig.
+
+Lauf: `bash ~/rtx4090-dl-workstation/scripts-4090/10b-run-llm-bench.sh` (ca. 10 min, per SSH),
 Ergebnis nach `~/hermes-bench/results/4090rtx-RTX-4090-<datum>.md`, dann ins
 `hermes-on-rtx3090`-Repo (`bench/results/`, 4090-Spalte in `docs/benchmarks.md`).
 Hinweis aus der 3090-Auswertung: gemma4:31b lief dort vermutlich teilweise im RAM
