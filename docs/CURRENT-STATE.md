@@ -47,6 +47,17 @@ dauerhaft deaktiviert (`systemctl --user disable --now`, Port 3389 zu; VRAM-Basi
 mit gestoppten Remote-Desktop-Diensten — Wrapper [`scripts-4090/10b-run-llm-bench.sh`](../scripts-4090/10b-run-llm-bench.sh).
 Der Concurrency-Teil des Skripts ist damit auf beiden Boxen gleich (nicht) aussagekräftig.
 
+**Ergebnis 2026-09-13** (voller Lauf, Rohdaten und Vergleich im hermes-Repo `docs/benchmarks.md`):
+
+| Modell | Generation tok/s (3090 → 4090) | Prompt eval 16k tok/s | TTFT 16k (s) | tok/Wh |
+|---|---|---|---|---|
+| qwen3.6-27b-64k | 51.3 → 93.3 (1.8×) | 1165 → 2623 (2.3×) | 10.8 → 4.8 | 561 → 1021 |
+| qwen3.6:35b (MoE) | 93.0 → 164.4 (1.8×) | 2484 → 5960 (2.4×) | 5.1 → 2.1 | 1924 → 4552 |
+| gemma4:31b | 16.6 → 31.8 (1.9×) | 898 → 2046 (2.3×) | 14.1 → 6.2 | 247 → 548 |
+
+Raw bf16 matmul (torch 2.14+cu132): 171.7 TFLOPS. Generation skaliert flach mit 1.8× (bandbreitenbegrenzt),
+Prompt-Verarbeitung mit 2.3–2.4× (rechenbegrenzt, Tensor Cores).
+
 Lauf: `bash ~/rtx4090-dl-workstation/scripts-4090/10b-run-llm-bench.sh` (ca. 10 min, per SSH),
 Ergebnis nach `~/hermes-bench/results/4090rtx-RTX-4090-<datum>.md`, dann ins
 `hermes-on-rtx3090`-Repo (`bench/results/`, 4090-Spalte in `docs/benchmarks.md`).
