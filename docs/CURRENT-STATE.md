@@ -16,6 +16,25 @@ Fresh-Install-Anwendung des Guides; die 3090-Box war vorprovisioniert.
 | Netz | `eno2` 2.5 GbE (3090-Box hängt an 10G) |
 | Terminal | Ptyxis (26.04-Standard), Copy/Paste auf `<ctrl>c`/`<ctrl>v` umgebogen (`org.gnome.Ptyxis.Shortcuts`) |
 
+## LLM-Benchmark (Ollama, hermes-bench)
+
+Schritt 0 des Guides ([SETUP.md](SETUP.md#0-llm-benchmark-first-toks--requirements-on-a-fresh-system)),
+vorbereitet 2026-09-13 mit [`scripts-4090/10-ollama-llm-bench.sh`](../scripts-4090/10-ollama-llm-bench.sh):
+
+| | 3090 (`ubnt2080rm`) | 4090rtx |
+|---|---|---|
+| Ollama | 0.34.0, System-Service als User `ollama`, `/usr/local/bin` | **0.34.0**, `~/ollama/bin`, **`systemd --user`-Unit** `ollama.service` (kein root nötig), CUDA-Lib `cuda_v13`, Treiber 13.2 |
+| `OLLAMA_NUM_PARALLEL` | nicht gesetzt (Concurrency-Test lief mit Queue) | **4** in der Unit |
+| Modelle | qwen3.6:27b, qwen3.6:35b, gemma4:31b, qwen3.6-27b-64k | dieselben, `qwen3.6-27b-64k` per `ollama create` aus `~/hermes-bench/Modelfile.qwen3.6-27b-64k` (`FROM qwen3.6:27b`, `num_ctx 65536`) |
+| Skript | `~/hermes-bench/llm-bench.sh` (ohne `LC_ALL=C` → CPU/RAM-Felder leer) | `~/hermes-bench/llm-bench.sh`, Fassung aus dem Repo mit `LC_ALL=C` |
+| PyTorch für die TFLOPS-Zeile | nicht verfügbar | `PATH=$HOME/venvs/torchgpu/bin:$PATH` voranstellen |
+
+Lauf: `PATH=$HOME/venvs/torchgpu/bin:$PATH ~/hermes-bench/llm-bench.sh` (ca. 10 min),
+Ergebnis nach `~/hermes-bench/results/4090rtx-RTX-4090-<datum>.md`, dann ins
+`hermes-on-rtx3090`-Repo (`bench/results/`, 4090-Spalte in `docs/benchmarks.md`).
+Hinweis aus der 3090-Auswertung: gemma4:31b lief dort vermutlich teilweise im RAM
+(256k Default-Kontext) — für einen fairen Vergleich beide Seiten mit kleinerem `num_ctx` wiederholen.
+
 ## Abweichungen vom Guide
 
 | Schritt | Guide | 4090rtx | Grund |

@@ -15,6 +15,7 @@ whole setup can be re-run non-interactively on a fresh machine.
 
 ## Table of contents
 
+0. [LLM benchmark first (tok/s) — requirements on a fresh system](#0-llm-benchmark-first-toks--requirements-on-a-fresh-system)
 1. [Base system](#1-base-system)
 2. [Development tools](#2-development-tools)
 3. [Git & GitHub](#3-git--github)
@@ -30,6 +31,26 @@ whole setup can be re-run non-interactively on a fresh machine.
 13. [Changes vs. the 2022 guide](#changes-vs-the-2022-guide)
 
 ---
+
+## 0. LLM benchmark first (tok/s) — requirements on a fresh system
+
+The first thing to run on a new GPU box is the LLM inference benchmark
+(`bench/llm-bench.sh` from `rmesterheide/hermes-on-rtx3090`), so the machine
+gets a tok/s number that is comparable line by line with the other box
+*before* anything else changes the picture. It does **not** need the rest of
+this guide (no CUDA toolkit, no venvs) — only:
+
+| Requirement | Why | Fresh-system source |
+|---|---|---|
+| NVIDIA driver (`nvidia-smi` works) | Ollama's bundled CUDA runtime talks to the driver directly | Ubuntu installer (third-party drivers) or step 4 |
+| `jq`, `zstd`, `curl`, `python3` | the script parses Ollama's JSON, the Ollama tarball is `.tar.zst` | `apt` (`python3`/`curl` are preinstalled on Ubuntu desktop) |
+| Ollama, **same version on both machines** (0.34.0 today) | tok/s depends on the Ollama/llama.cpp build | `ollama-linux-amd64.tar.zst` from the GitHub release, run as a `systemd --user` service (no root needed) |
+| `OLLAMA_NUM_PARALLEL=4` in the service env | otherwise the concurrency section just queues requests | set in the user unit |
+| the three models (~58 GB) + the `qwen3.6-27b-64k` Modelfile (`FROM qwen3.6:27b`, `num_ctx 65536`) | same models, same context sizes on both boxes | `ollama pull`, `ollama create` |
+| optional: a Python with PyTorch on `PATH` | fills the bf16 TFLOPS line at the end | step 8's `torchgpu` venv, or skip |
+
+Automated in [`scripts-4090/10-ollama-llm-bench.sh`](../scripts-4090/10-ollama-llm-bench.sh);
+what it produced on `4090rtx` is in [`CURRENT-STATE.md`](CURRENT-STATE.md#llm-benchmark-ollama-hermes-bench).
 
 ## 1. Base system
 

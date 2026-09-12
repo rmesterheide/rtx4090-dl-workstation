@@ -10,6 +10,14 @@ wurde auf dieser Maschine zum ersten Mal wirklich von Null durchgefahren.
 der Remote-Desktop-Einrichtung (Sunshine/Moonlight unter Wayland):**
 [`docs/CURRENT-STATE.md`](docs/CURRENT-STATE.md).
 
+## Erster Lauf: LLM-Benchmark (tok/s)
+
+Bevor der DL-Stack kommt, bekommt die Box ihre Vergleichszahl: Ollama in derselben
+Version wie auf der 3090, die drei Modelle, dann `~/hermes-bench/llm-bench.sh` aus
+`rmesterheide/hermes-on-rtx3090`. Voraussetzungen auf einem frischen System und
+Automatisierung: [`docs/SETUP.md` Abschnitt 0](docs/SETUP.md#0-llm-benchmark-first-toks--requirements-on-a-fresh-system),
+[`scripts-4090/10-ollama-llm-bench.sh`](scripts-4090/10-ollama-llm-bench.sh).
+
 ## Layout
 
 - [`docs/SETUP.md`](docs/SETUP.md) — der generische From-Scratch-Guide (Ubuntu 26.04,
@@ -22,6 +30,7 @@ der Remote-Desktop-Einrichtung (Sunshine/Moonlight unter Wayland):**
     `sitecustomize.py`, das die pip-CUDA-12-Libs vor dem System-CUDA-13 lädt
   - `09-docker-apt.sh` — Docker aus dem Ubuntu-Archiv statt `get.docker.com | sudo sh`,
     läuft komplett mit dem eng gescopten sudoers
+  - `10-ollama-llm-bench.sh` — Ollama (User-Service, versionsgleich zur 3090) + Modelle + Benchmark-Vorbereitung
 - [`environments/`](environments) — pip-Requirements pro venv
 - [`systemd/jupyterlab.service`](systemd/jupyterlab.service) — JupyterLab als User-Service
 
