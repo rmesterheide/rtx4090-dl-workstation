@@ -1,0 +1,6 @@
+opencv-python
+pillow
+albumentations
+scikit-image
+matplotlib
+ipykernel

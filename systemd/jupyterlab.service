@@ -1,0 +1,12 @@
+[Unit]
+Description=JupyterLab
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=%h/venvs/jupyterhub/bin/jupyter lab --no-browser --ip=127.0.0.1 --port=8888 --notebook-dir=%h
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
