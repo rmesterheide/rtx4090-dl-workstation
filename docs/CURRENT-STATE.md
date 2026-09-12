@@ -36,6 +36,10 @@ Reboot via `sudo systemctl reboot`.
 
 ## Gotchas
 
+- `gh auth login` (gh 2.46 auf 26.04) kennt `--skip-ssh-key` noch nicht; die Survey-Prompts
+  lassen sich per `script -q -f -c ... log` und gepipeten Escape-Sequenzen (`\033[B` = Pfeil runter,
+  `\r` = Enter) fernsteuern, der Einmal-Code steht dann im Log.
+
 - `pkill -f <muster>` über SSH killt die eigene SSH-Shell, wenn das Muster
   in deren Kommandozeile vorkommt. Prozesse per `ps`+`awk` filtern.
 - Nach dem Repo-Wechsel 2604→2404 blieb `cuda-ubuntu2604-x86_64.list`
@@ -95,8 +99,8 @@ starten, Log lesen) oder auf Treiber ≥ 610 warten.
 
 ## Offen
 
-- [ ] `gh auth login --git-protocol ssh --web` + `gh ssh-key add ~/.ssh/id_ed25519.pub --title 4090rtx` (User, interaktiv)
-- [ ] Repo auf der Box (`~/rtx4090-dl-workstation`) ist eine rsync-Kopie, nach gh-Login durch echten Clone ersetzen (`~/rtx3090-dl-workstation` dort ist die alte Kopie, kann weg)
+- [x] gh-Login auf der Box (Device-Flow, 2026-09-12 23:5x), Box-SSH-Key als `4090rtx` bei GitHub (vom Mac-gh hochgeladen), `git_protocol ssh`
+- [x] `~/rtx4090-dl-workstation` ist jetzt ein echter Clone. Aufräumkandidaten im Home: `~/rtx4090-dl-workstation.rsync-copy`, `~/rtx3090-dl-workstation` (beides alte Kopien), `~/setup-0*.sh`, `~/setup-0*.log`
 - [x] Eigenes Repo: [rmesterheide/rtx4090-dl-workstation](https://github.com/rmesterheide/rtx4090-dl-workstation) (privat, 2026-09-12)
 - [x] Web-UI-Zugangsdaten gesetzt, Moonlight vom Mac gepairt, Stream läuft (HEVC/Vulkan, 1080p)
 - [x] Reboot-Test 2026-09-12 23:31: Autologin in Wayland-Session (nicht gesperrt), Sunshine 1080p + Encoder, JupyterLab, Docker, alle Ports — ohne Eingriff hochgekommen
