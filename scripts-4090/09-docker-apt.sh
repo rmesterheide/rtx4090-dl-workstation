@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# 4090rtx-Variante von 09-docker.sh: Docker aus dem Ubuntu-Archiv (docker.io)
-# statt get.docker.com | sudo sh -- laeuft komplett mit dem gescopten sudoers.
+# 4090rtx variant of 09-docker.sh: Docker from the Ubuntu archive (docker.io)
+# instead of get.docker.com | sudo sh -- runs entirely within the scoped sudoers.
 set -euo pipefail
 export DEBIAN_FRONTEND=noninteractive
 sudo -n apt-get install -y -qq docker.io docker-compose-v2
@@ -18,5 +18,5 @@ sudo -n nvidia-ctk runtime configure --runtime=docker
 sudo -n systemctl restart docker
 sudo -n systemctl enable docker >/dev/null
 docker --version; nvidia-ctk --version
-echo "Verify (neue Login-Shell wegen docker-Gruppe, oder via sg docker):"
+echo "Verify (new login shell for the docker group; note: sg is not available on 26.04):"
 echo "  docker run --rm --gpus all nvidia/cuda:13.2.0-base-ubuntu24.04 nvidia-smi"

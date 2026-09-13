@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# 4090rtx-Variante von 04-cuda-toolkit.sh + 05-cudnn.sh + 06-python-envs.sh, so gelaufen am 2026-09-12.
-# Abweichung: CUDA 13.2 aus dem ubuntu2404-Repo (ubuntu2604 fuehrt nur 13.3+, Treiber 595 kann max. 13.2).
-# Danach: scripts-4090/06b-tfgpu-py313.sh, dann scripts/07-frameworks.sh.
+# 4090rtx variant of 04-cuda-toolkit.sh + 05-cudnn.sh + 06-python-envs.sh, exactly as run on 2026-09-12.
+# Deviation: CUDA 13.2 from the ubuntu2404 repo (ubuntu2604 only carries 13.3+, driver 595 supports up to 13.2).
+# Next: scripts-4090/06b-tfgpu-py313.sh, then scripts/07-frameworks.sh.
 set -euo pipefail
 export DEBIAN_FRONTEND=noninteractive
 echo "=== 04 CUDA toolkit 13.2 (repo ubuntu2404) $(date)"
