@@ -64,6 +64,27 @@ Ergebnis nach `~/hermes-bench/results/4090rtx-RTX-4090-<datum>.md`, dann ins
 Hinweis aus der 3090-Auswertung: gemma4:31b lief dort vermutlich teilweise im RAM
 (256k Default-Kontext) — für einen fairen Vergleich beide Seiten mit kleinerem `num_ctx` wiederholen.
 
+## Hermes Agent + nvtop (2026-09-13)
+
+Wie auf der 3090 ([Walkthrough im hermes-Repo](https://github.com/rmesterheide/hermes-on-rtx3090)),
+nur nicht-interaktiv aufgesetzt:
+
+| | 3090 | 4090rtx |
+|---|---|---|
+| Hermes | v0.21.2 (2026.9.11), Installer mit Wizard | **v0.21.2**, `install.sh --skip-setup --non-interactive`, Config danach von der 3090 kopiert |
+| Config | `~/.hermes/config.yaml`: provider `custom`, `http://localhost:11434/v1`, Modell `qwen3.6-27b-64k:latest`, Terminal-Backend `local` | identisch (Kopie), Installer-Default gesichert als `config.yaml.installer-default` |
+| Secrets | `~/.hermes/.env` mit `HA_URL`/`HA_TOKEN` | Kopie, dedupliziert (Platzhalter-`HA_URL` entfernt), `chmod 600` |
+| Skill | `~/.hermes/skills/home-assistant` | Kopie, `hermes skills list` → enabled |
+| nvtop | 3.0.2 (apt) | 3.2.0 (apt) |
+| Extras | — | ripgrep (Installer-Hinweis), xz-utils |
+
+Verifiziert (one-shot `hermes chat -q`, Ollama-Modell auf der GPU):
+- „nvidia-smi + df -h“-Frage: 3 Tool-Calls, korrekte Antwort, **13 s**.
+- „How many and which lights are on?“: HA-API-Test `{"message":"API running."}`, 10 Tool-Calls, Lampenliste inkl. Gruppen-Erkennung, **17 s**.
+
+Hinweis: Mit laufendem Sunshine lädt das 64k-Modell nur zu 93 % auf die GPU (siehe VRAM-Befund
+oben); für den Agenten reicht das, für Messungen Sunshine stoppen.
+
 ## Abweichungen vom Guide
 
 | Schritt | Guide | 4090rtx | Grund |
